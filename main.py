@@ -19,8 +19,8 @@ def main():
             if sonar.checkConnection():
                 # connection succeed
                 project.setProject()
-                # sonar.getIssues()
-                sonar.analyze(project.path)
+                # sonar.analyze(project.path)
+                sonar.getIssues()
         else:
             print("Please give a valid option from the list")
             pass

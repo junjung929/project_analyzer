@@ -7,7 +7,7 @@ config = utils.getConfig("sonar")
 default_server = config.get("server_url")
 username = config.get("username")
 password = config.get("password")
-token = config.get("token")
+tokenname = config.get("tokenname")
 
 SERVER_NOT_RUNNING = False
 SERVER_IS_RUNNING = True
@@ -15,14 +15,19 @@ SERVER_IS_RUNNING = True
 
 class SonarHelper:
     def __init__(self, url=default_server):
-        self.token_name = None
-        self.token = token
+        self.token_name = tokenname
+        self.token = None
         self.server_url = url
         self.basicAuth = None
 
     # Check connection
     def checkConnection(self):
-        res = utils.get(self.server_url, "/api/system/status")
+        try:
+            res = utils.get(self.server_url, "/api/system/status")
+        except Exception:
+            print("\nError: Cannot connect the Sonarqube server. Please make sure your Sonarqube server is running on '"
+                  + self.server_url+"'")
+            return SERVER_NOT_RUNNING
         status = res.get("status")
         if status == "UP":
             return SERVER_IS_RUNNING
@@ -46,20 +51,33 @@ class SonarHelper:
             self.token_name = input("Please input the token name: ")
 
         querystring = {"name": self.token_name}
-        res = utils.post(
-            self.server_url, "/api/user_tokens/generate", querystring, self.basicAuth)
+        try:
+            res = utils.post(
+                self.server_url, "/api/user_tokens/generate", querystring, self.basicAuth)
 
-        if res.get("errors"):
-            for error in res.get("errors"):
-                print("Error: " + error.get("msg"))
-        self.token = res.get("token")
+            if res.get("errors"):
+                for error in res.get("errors"):
+                    print("Error: " + error.get("msg"))
+                raise Exception("Cannot generate token")
+            self.token = res.get("token")
+        except Exception as e:
+            self.token_name = None
+            self.generateToken()
 
+    # Run analysis maven
     def analyze(self, basename):
         try:
+            if self.token is None:
+                self.generateToken()
             os.system("cd " + basename + " && mvn clean compile sonar:sonar -Dsonar.host.url=" +
                       self.server_url+" -Dsonar.login=" + self.token)
         except Exception as e:
             print(e)
-    # Run analysis maven
 
     # Get issues
+    def getIssues(self):
+        if self.basicAuth is None:
+            self.auth()
+
+        res = utils.get(self.server_url, '/api/issues/search', self.basicAuth)
+        print(res)

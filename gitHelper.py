@@ -22,17 +22,16 @@ class GitHelper():
             self.cloneRepository()
 
         else:
+            print("\nCurrent project is set '" + self.name + "'")
             while True:
-                isChange = input("\nWould you like to analyze another project? (current project '"
-                                 + self.name
-                                 + "')(y/N): ") or "n"
+                isChange = input("Would you like to analyze another project?(y/N): ") or "n"
                 if isChange is "y" or isChange is "Y":
                     self.resetProject()
                     self.setProject()
+                    print("Current project is set '" + self.name + "'")
                     break
                 elif isChange is "n" or isChange is "N":
                     break
-        print("Current project is '" + self.name + "'")
         self.path = "projects/" + self.name
         self.cloned_repo = Repo(self.path)
 
