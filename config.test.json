@@ -1,0 +1,8 @@
+{
+    "sonar": {
+        "username": "admin",
+        "password": "admin",
+        "tokenname": "token",
+        "server_url": "http://localhost:9000"
+    }
+}

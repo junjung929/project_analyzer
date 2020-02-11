@@ -21,4 +21,7 @@ def post(url, api, params={}, auth=None):
     except Exception as e:
         print(e)
         return -1
+
+def getBasicAuth(username, password):
+    return requests.auth.HTTPBasicAuth(username, password)
 # Convert to JSON
