@@ -1,23 +1,25 @@
 from gitHelper import GitHelper
 from sonarHelper import SonarHelper
 
+project = GitHelper()
+sonar = SonarHelper()
+
 def main():
-    project = GitHelper()
-    sonar = SonarHelper()
     while True:
-        project.setProject()
-        print("\n####################################")
-        print("1. Sonarqube")
+        print("\n#################################################")
+        print("1. Analyze a JAVA project via Sonarqube")
         print("q. Quit")
-        print("####################################")
-        select = input("Choose a tool to analyze: ")
-        if select == "q":
-            print("Finishing the program...")
+        print("#################################################")
+        select = input("Choose an option above: ")
+        if select == "q" or select == "Q":
+            print("\nFinishing the program...")
             exit(0)
         elif select == "1":
+            print("\nSelected option: Analyze a JAVA project via Sonarqube")
             if sonar.checkConnection():
                 # connection succeed
-                sonar.generateToken()
+                project.setProject()
+                # sonar.getIssues()
                 sonar.analyze(project.path)
         else:
             print("Please give a valid option from the list")
