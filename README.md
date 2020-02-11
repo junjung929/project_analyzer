@@ -7,8 +7,8 @@ In result, it extracts issues and commits into CSV files.
 
 ```bash
 # Clone the repository
-git clone <repo_url> <dir_name>
-cd <dir_name>
+git clone https://github.com/junjung929/project_analyzer.git project_analyzer
+cd project_analyzer
 
 # Install dependancies
 pip3 install requirements.txt
