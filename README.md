@@ -1,11 +1,14 @@
 # Analyze JAVA projects via multiple tools
 
+This program is to analyze projects written in JAVA using three different analyzing tools; Sonarqube, PDM and Checkstyle.
+In result, it extracts issues and commits into CSV files.
+
 ## Install
 
 ```bash
 # Clone the repository
-git clone <repo_url> <dir_name>
-cd <dir_name>
+git clone https://github.com/junjung929/project_analyzer.git project_analyzer
+cd project_analyzer
 
 # Install dependancies
 pip3 install requirements.txt
