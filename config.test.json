@@ -4,5 +4,9 @@
         "password": "admin",
         "tokenname": "token",
         "server_url": "http://localhost:9000"
+    },
+    "git": {
+        "project_url": "https://github.com/apache/commons-cli.git",
+        "project_name": "commons-cli"
     }
 }

@@ -3,20 +3,11 @@ import requests
 import json
 import utils
 
-ENV = os.environ.get("ENV") or "development"
-
-if ENV == "development":
-    CONFIG_PATH = "config.test.json"
-else:
-    CONFIG_PATH = "config.json"
-
-with open(CONFIG_PATH) as config_data:
-    config = json.load(config_data)
-    sonar = config.get("sonar")
-    default_server = sonar.get("server_url")
-    username = sonar.get("username")
-    password = sonar.get("password")
-    token = sonar.get("token")
+config = utils.getConfig("sonar")
+default_server = config.get("server_url")
+username = config.get("username")
+password = config.get("password")
+token = config.get("token")
 
 SERVER_NOT_RUNNING = False
 SERVER_IS_RUNNING = True
