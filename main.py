@@ -5,13 +5,13 @@ from sonarHelper import SonarHelper
 
 def main():
     while True:
-        print("\n#################################################")
+        print("\n#################################################\n")
         print("1. Analyze a JAVA project via Sonarqube")
         print("2. Analyze a JAVA project via PMD")
         print("3. Analyze a JAVA project via Checkstyle")
         print("q. Quit")
-        print("#################################################")
-        select = input("Choose an option above: ")
+        print("\n#################################################\n")
+        select = input("Choose an option from above: ")
         if select == "q" or select == "Q":
             print("\nFinishing the program...")
             exit(0)
