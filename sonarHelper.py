@@ -4,21 +4,23 @@ import json
 import utils
 
 config = utils.getConfig("sonar")
-default_server = config.get("server_url")
-username = config.get("username")
-password = config.get("password")
-tokenname = config.get("tokenname")
+default_server = config.get("server_url") or None
+username = config.get("username") or None
+password = config.get("password") or None
+tokenname = config.get("tokenname") or None
 
 SERVER_NOT_RUNNING = False
 SERVER_IS_RUNNING = True
 
 
 class SonarHelper:
-    def __init__(self, url=default_server):
+    def __init__(self, url=default_server, name=None):
         self.token_name = tokenname
         self.token = None
         self.server_url = url
         self.basicAuth = None
+        self.key = None
+        self.name = name
 
     # Check connection
     def checkConnection(self):
@@ -60,9 +62,16 @@ class SonarHelper:
                     print("Error: " + error.get("msg"))
                 raise Exception("Cannot generate token")
             self.token = res.get("token")
+            self.name = res.get("name")
         except Exception as e:
             self.token_name = None
             self.generateToken()
+
+    def getKey(self):
+        res = utils.get(self.server_url, '/api/projects/search',
+                        self.basicAuth, {"q": self.name})
+        compo = res.get("components")
+        self.key = compo[0].get("key")
 
     # Run analysis maven
     def analyze(self, basename):
@@ -78,6 +87,21 @@ class SonarHelper:
     def getIssues(self):
         if self.basicAuth is None:
             self.auth()
+        if self.key is None:
+            self.getKey()
+        try:
+            res = utils.get(self.server_url,
+                            '/api/issues/search', self.basicAuth, {"componentKeys": self.key})
 
-        res = utils.get(self.server_url, '/api/issues/search', self.basicAuth)
-        print(res)
+            if res.get("errors"):
+                for error in res.get("errors"):
+                    print("Error: " + error.get("msg"))
+                raise Exception("Cannot get issues")
+
+            issues = res.get("issues")
+
+            utils.extractAnalysisToCSV(self.name, issues)
+
+
+        except Exception as e:
+            print(e)

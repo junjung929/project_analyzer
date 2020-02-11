@@ -1,4 +1,7 @@
 projects/*
-!projects/.keep
+analysis_results/*
+!*/.keep
+
 __pycache__
+
 config.json

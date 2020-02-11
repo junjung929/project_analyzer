@@ -1,8 +1,7 @@
 from gitHelper import GitHelper
 from sonarHelper import SonarHelper
 
-project = GitHelper()
-sonar = SonarHelper()
+
 
 def main():
     while True:
@@ -16,13 +15,14 @@ def main():
             exit(0)
         elif select == "1":
             print("\nSelected option: Analyze a JAVA project via Sonarqube")
+            project = GitHelper()
+            sonar = SonarHelper(name=project.name)
             if sonar.checkConnection():
                 # connection succeed
-                project.setProject()
                 # sonar.analyze(project.path)
                 sonar.getIssues()
         else:
-            print("Please give a valid option from the list")
+            print("\nWrong option. Please give a valid option from the list")
             pass
 
 

@@ -3,8 +3,8 @@ from git import Repo
 import utils
 
 config = utils.getConfig("git")
-default_project = config.get("project_url")
-default_name = config.get("project_name")
+default_project = config.get("project_url") or None
+default_name = config.get("project_name") or None
 
 
 class GitHelper():
@@ -12,6 +12,7 @@ class GitHelper():
         self.url = url
         self.name = name
         self.cloned_repo = None
+        self.setProject()
 
     # Ask URL
     def setProject(self):
@@ -19,10 +20,12 @@ class GitHelper():
             self.url = input(
                 "\nPlease give the full URL address of the JAVA project you want to analyze: ")
             self.name = os.path.basename(self.url).split(".")[0]
+            self.path = "projects/" + self.name
             self.cloneRepository()
 
         else:
             print("\nCurrent project is set '" + self.name + "'")
+            self.path = "projects/" + self.name
             while True:
                 isChange = input("Would you like to analyze another project?(y/N): ") or "n"
                 if isChange is "y" or isChange is "Y":
@@ -32,7 +35,6 @@ class GitHelper():
                     break
                 elif isChange is "n" or isChange is "N":
                     break
-        self.path = "projects/" + self.name
         self.cloned_repo = Repo(self.path)
 
     def resetProject(self):
