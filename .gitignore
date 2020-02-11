@@ -1,5 +1,6 @@
 projects/*
 analysis_results/*
+commit_data/*
 !*/.keep
 
 __pycache__

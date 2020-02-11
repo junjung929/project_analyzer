@@ -1,5 +1,5 @@
+from pydriller import RepositoryMining
 import os
-from git import Repo
 import utils
 
 config = utils.getConfig("git")
@@ -11,7 +11,6 @@ class GitHelper():
     def __init__(self, url=default_project, name=default_name):
         self.url = url
         self.name = name
-        self.cloned_repo = None
         self.setProject()
 
     # Ask URL
@@ -27,7 +26,8 @@ class GitHelper():
             print("\nCurrent project is set '" + self.name + "'")
             self.path = "projects/" + self.name
             while True:
-                isChange = input("Would you like to analyze another project?(y/N): ") or "n"
+                isChange = input(
+                    "Would you like to analyze another project?(y/N): ") or "n"
                 if isChange is "y" or isChange is "Y":
                     self.resetProject()
                     self.setProject()
@@ -35,12 +35,10 @@ class GitHelper():
                     break
                 elif isChange is "n" or isChange is "N":
                     break
-        self.cloned_repo = Repo(self.path)
 
     def resetProject(self):
         self.url = None
         self.name = None
-        self.cloned_repo = None
 
     # Clone repository
     def cloneRepository(self):
@@ -49,18 +47,21 @@ class GitHelper():
         if os.path.isdir(self.path):
             # Check existance of the repo
             print("\nThe repository '" + self.name + "' already exists.")
-            # self.cloned_repo = Repo(self.path)
-            # print("Update the repository...")
-            # self.cloned_repo.remotes.origin.pull()
-            # print("Update done")
         else:
             try:
                 print("\nCloning '" + self.name+"' respository...")
-                Repo.clone_from(self.url, self.path)
                 print("The repository is successfully cloned")
             except Exception as e:
                 # Fail
-                print(e)
-                return -1
+                raise Exception(e)
 
     # Get commits
+    def getCommits(self):
+        print("Extracting commits...")
+        try:
+            utils.extractCommitsToCSV(
+                self.name, RepositoryMining(self.path).traverse_commits())
+            print("Commits successfully extracted to path: " +
+                  os.path.realpath("commit_data/"+self.name+".csv"))
+        except Exception as e:
+            raise Exception(e)

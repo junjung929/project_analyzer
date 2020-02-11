@@ -38,7 +38,7 @@ def getConfig(target):
         raise Exception(e)
 
 
-def extractAnalysisToCSV(filename, data):
+def extractAnalysisToCSV(filename, issues):
     heads = [
         'projectName', 'creationDate', 'creationCommitHash', 'type', 'squid', 'component',
         'severity', 'startLine', 'endLine', 'resolution', 'status', 'message',
@@ -49,25 +49,58 @@ def extractAnalysisToCSV(filename, data):
                                 quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(heads)
 
-            for row in data:
+            for issue in issues:
+                
                 writer.writerow([
-                    row.get("project") or "",
-                    row.get("creationDate") or "",
-                    row.get("hash") or "",
-                    row.get("type") or "",
-                    row.get('rule') or "",
-                    row.get('component') or "",
-                    row.get('severity') or "",
-                    row.get('textRange').get('startLine') or "",
-                    row.get('textRange').get('endLine') or "",
-                    row.get('resolution') or "",
-                    row.get('status') or "",
-                    row.get('message') or "",
-                    row.get('effort') or "",
-                    row.get('debt') or "",
-                    row.get('author') or "",
+                    issue.get("project") or "",
+                    issue.get("creationDate") or "",
+                    issue.get("hash") or "",
+                    issue.get("type") or "",
+                    issue.get('rule') or "",
+                    issue.get('component') or "",
+                    issue.get('severity') or "",
+                    issue.get('textRange').get('startLine') if issue.get('textRange') else "",
+                    issue.get('textRange').get('endLine') if issue.get('textRange') else "",
+                    issue.get('resolution') or "",
+                    issue.get('status') or "",
+                    issue.get('message') or "",
+                    issue.get('effort') or "",
+                    issue.get('debt') or "",
+                    issue.get('author') or "",
                 ])
-        print("Analysis results successfully extracted to path: " +
-              os.path.realpath("analysis_results/"+filename+".csv"))
+        
+    except Exception as e:
+        print(e)
+
+
+def extractCommitsToCSV(filename, commits):
+    heads = [
+        "projectID", "commitHash", "commitMessage", "author", "authorDate",
+        "authorTimezone", "committer", "committerDate", "committerTimezone",
+        "branches", "inMainBranch", "merge", "parents"
+    ]
+    try:
+        with open("commit_data/"+filename+".csv", "w") as analysis_file:
+            writer = csv.writer(analysis_file, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(heads)
+
+            for commit in commits:
+                writer.writerow([
+                    commit.project_name or "",
+                    commit.hash or "",
+                    commit.msg or "",
+                    commit.author.name or "",
+                    commit.author_date or "",
+                    commit.author_timezone or "",
+                    commit.committer.name or "",
+                    commit.committer_date or "",
+                    commit.committer_timezone or "",
+                    commit.branches or "",
+                    commit.in_main_branch or "",
+                    commit.merge or "",
+                    commit.parents or "",
+                ])
+
     except Exception as e:
         print(e)

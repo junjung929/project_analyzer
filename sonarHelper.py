@@ -62,7 +62,6 @@ class SonarHelper:
                     print("Error: " + error.get("msg"))
                 raise Exception("Cannot generate token")
             self.token = res.get("token")
-            self.name = res.get("name")
         except Exception as e:
             self.token_name = None
             self.generateToken()
@@ -81,10 +80,11 @@ class SonarHelper:
             os.system("cd " + basename + " && mvn clean compile sonar:sonar -Dsonar.host.url=" +
                       self.server_url+" -Dsonar.login=" + self.token)
         except Exception as e:
-            print(e)
+            raise Exception(e)
 
     # Get issues
     def getIssues(self):
+        print("Extracting issues...")
         if self.basicAuth is None:
             self.auth()
         if self.key is None:
@@ -101,7 +101,8 @@ class SonarHelper:
             issues = res.get("issues")
 
             utils.extractAnalysisToCSV(self.name, issues)
-
+            print("Analysis results successfully extracted to path: " +
+                  os.path.realpath("analysis_results/"+self.name+".csv"))
 
         except Exception as e:
-            print(e)
+            raise Exception(e)

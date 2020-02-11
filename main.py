@@ -7,6 +7,8 @@ def main():
     while True:
         print("\n#################################################")
         print("1. Analyze a JAVA project via Sonarqube")
+        print("2. Analyze a JAVA project via PMD")
+        print("3. Analyze a JAVA project via Checkstyle")
         print("q. Quit")
         print("#################################################")
         select = input("Choose an option above: ")
@@ -19,8 +21,19 @@ def main():
             sonar = SonarHelper(name=project.name)
             if sonar.checkConnection():
                 # connection succeed
-                # sonar.analyze(project.path)
-                sonar.getIssues()
+                try:
+                    print("\nProcess analyzing...")
+                    sonar.analyze(project.path)
+                    print("\nProcess extracting...")
+                    sonar.getIssues()
+                    project.getCommits()
+                    print("\nAnalyzing successfully done!")
+                except Exception as e:
+                    print(e)
+        elif select == "2":
+            print("\nSelected option is not available yet")
+        elif select == "3":
+            print("\nSelected option is not available yet")
         else:
             print("\nWrong option. Please give a valid option from the list")
             pass
