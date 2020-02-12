@@ -1,6 +1,7 @@
 from pydriller import RepositoryMining
 import os
 import utils
+from git import Repo
 
 config = utils.getConfig("git")
 default_project = config.get("project_url") or None
@@ -20,7 +21,6 @@ class GitHelper():
                 "\nPlease give the full URL address of the JAVA project you want to analyze: ")
             self.name = os.path.basename(self.url).split(".")[0]
             self.path = "projects/" + self.name
-            self.cloneRepository()
 
         else:
             print("\nCurrent project is set '" + self.name + "'")
@@ -35,6 +35,7 @@ class GitHelper():
                     break
                 elif isChange is "n" or isChange is "N":
                     break
+        self.cloneRepository()
 
     def resetProject(self):
         self.url = None
@@ -50,6 +51,7 @@ class GitHelper():
         else:
             try:
                 print("\nCloning '" + self.name+"' respository...")
+                Repo.clone_from(self.url, self.path)
                 print("The repository is successfully cloned")
             except Exception as e:
                 # Fail
